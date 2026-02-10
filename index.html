@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажор: Изваждане на числа със "заемане"</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
+
+        .instructions-box { background: #fff; border-left: 5px solid #27ae60; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 750px; width: 95%; margin-bottom: 15px; }
+        .instructions-box h3 { margin: 0 0 8px 0; }
+        .instructions-box p { margin: 0; line-height: 1.5; }
+
+        .explanation-panel { background: #fffdf5; border: 1px solid #f39c12; padding: 15px; border-radius: 8px; display: none; max-width: 750px; width: 95%; margin-bottom: 15px; line-height: 1.7; }
+
+        .toolbar { margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+        .container { background: white; padding: 20px 15px 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 95%; max-width: 800px; overflow-x: auto; }
+
+        .setup-panel { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; align-items: center; border: 1px solid #eee; }
+        .setup-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+        /* === ТАБЛИЦА === */
+        table { border-collapse: collapse; margin: 0 auto; }
+        td { vertical-align: bottom; }
+        .digit-col { width: 75px; text-align: center; padding: 0 2px; }
+        .sign-col { width: 50px; text-align: center; vertical-align: middle; }
+
+        /* Синьо квадратче за "10" */
+        .ten-box {
+            width: 44px; height: 36px; font-size: 1.15rem; text-align: center;
+            border: 2px solid #3498db; border-radius: 5px;
+            color: #2980b9; font-weight: bold; background: #f0f8ff;
+            outline: none; transition: border-color 0.2s;
+        }
+        .ten-box:focus { border-color: #2471a3; box-shadow: 0 0 0 2px rgba(52,152,219,0.3); }
+
+        /* Точка */
+        .dot-area { height: 22px; display: flex; justify-content: center; align-items: center; margin-bottom: 3px; }
+        .dot {
+            width: 15px; height: 15px; background-color: #e74c3c; border-radius: 50%;
+            display: none; border: 2px solid #c0392b;
+            animation: popIn 0.2s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        /* Цифри */
+        .digit {
+            font-size: 3.2rem; font-family: 'Courier New', monospace;
+            font-weight: bold; padding: 2px 5px; line-height: 1.1;
+            user-select: none;
+        }
+        .digit.minuend {
+            cursor: pointer; border-radius: 8px; transition: background 0.15s, color 0.15s;
+        }
+        .digit.minuend:hover { color: #e74c3c; background: #fff5f5; }
+        .digit.minuend.has-dot { color: #c0392b; }
+
+        .digit.subtrahend { color: #333; }
+
+        /* Линия */
+        .line-cell { border-bottom: 4px solid #333; height: 6px; }
+
+        /* Поле за резултат */
+        .input-res {
+            width: 55px; font-size: 2.5rem; text-align: center;
+            border: 2px solid #bdc3c7; border-radius: 8px;
+            margin-top: 10px; background: #fffde7;
+            font-family: 'Courier New', monospace; font-weight: bold;
+            outline: none; transition: border-color 0.2s;
+        }
+        .input-res:focus { border-color: #f39c12; box-shadow: 0 0 0 2px rgba(243,156,18,0.3); }
+        .input-res.leading-zero { background: #f0f0f0; border-color: #ddd; color: #bbb; cursor: default; }
+        .input-res.correct { border-color: #27ae60; background: #eafaf1; }
+        .input-res.wrong { border-color: #e74c3c; background: #fdedec; }
+
+        /* Знак минус */
+        .minus-sign { font-size: 3rem; color: #95a5a6; font-weight: bold; }
+
+        /* Бутони */
+        button {
+            padding: 10px 18px; border: none; border-radius: 6px;
+            cursor: pointer; font-weight: bold; font-size: 0.95rem;
+            transition: 0.2s; display: inline-flex; align-items: center; gap: 5px;
+        }
+        button:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+        .btn-blue { background: #3498db; color: white; }
+        .btn-green { background: #27ae60; color: white; font-size: 1.2rem; width: 100%; margin-top: 15px; padding: 14px; }
+        .btn-info { background: #f39c12; color: white; }
+        .btn-red { background: #e74c3c; color: white; }
+        .btn-purple { background: #9b59b6; color: white; }
+        .btn-print { background: #2c3e50; color: white; }
+        .btn-next { background: #16a085; color: white; font-size: 1.1rem; width: 100%; margin-top: 8px; padding: 12px; display: none; }
+
+        input[type="number"], input[type="text"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; }
+        input[type="number"]:focus, input[type="text"]:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 2px rgba(52,152,219,0.2); }
+
+        #msg { text-align: center; font-weight: bold; font-size: 1.3rem; margin-top: 15px; min-height: 1.5em; }
+
+        .score-bar {
+            display: flex; justify-content: center; gap: 25px; margin-bottom: 10px;
+            font-size: 1.05rem; font-weight: 600; color: #555;
+        }
+        .score-bar span { display: inline-flex; align-items: center; gap: 4px; }
+
+        /* === ПЕЧАТ === */
+        @media print {
+            .instructions-box, .setup-panel, .toolbar, button, #explanation, .btn-green, .btn-next, #msg, .score-bar { display: none !important; }
+            body { background-color: white; padding: 0; }
+            .container { box-shadow: none; border: 1px solid #ddd; width: 100%; max-width: 100%; padding: 30px; }
+            .ten-box { border: 1.5px solid #000; background: transparent; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .input-res { border: 1.5px solid #000; background: transparent; }
+            .dot { display: none !important; }
+            .digit { font-size: 3rem; }
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .digit { font-size: 2.4rem; }
+            .digit-col { width: 55px; }
+            .ten-box { width: 36px; height: 30px; font-size: 1rem; }
+            .input-res { width: 45px; font-size: 2rem; }
+            .minus-sign { font-size: 2.2rem; }
+            .sign-col { width: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="instructions-box">
+    <h3>🧮 Изваждане на числа със "заемане"</h3>
+    <p><b>1.</b> Кликни върху цифрата от умаляемото, за да покажеш точка (•) — знак за заемане.<br>
+       <b>2.</b> Напиши <b>10</b> в синьото квадратче над съответната цифра.<br>
+       <b>3.</b> Попълни разликата и натисни <em>Провери</em>.</p>
+</div>
+
+<div class="toolbar">
+    <button class="btn-info" onclick="toggleExp()">💡 Обяснение</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Принтирай</button>
+    <button class="btn-red" onclick="clearInputs()">🧹 Изчисти</button>
+</div>
+
+<div id="explanation" class="explanation-panel">
+    <strong>Пример: 982 − 367</strong><br><br>
+    <b>Единици:</b> 2 &lt; 7 → Заемаме 1 десетица от 8 (<em>кликни върху 8 → появява се точка</em>).<br>
+    Над 2 записваме <b>10</b>. Смятаме: (10 + 2) − 7 = <b>5</b>.<br><br>
+    <b>Десетици:</b> Точката ни напомня, че 8 е станало 7. Смятаме: 7 − 6 = <b>1</b>.<br><br>
+    <b>Стотици:</b> 9 − 3 = <b>6</b>.<br><br>
+    ✅ Разлика: <b>615</b>.
+</div>
+
+<div class="container">
+    <div class="score-bar">
+        <span>✅ Верни: <b id="scoreCorrect">0</b></span>
+        <span>❌ Грешни: <b id="scoreWrong">0</b></span>
+    </div>
+
+    <div class="setup-panel">
+        <div class="setup-group">
+            <label for="digitCount">Цифри:</label>
+            <input type="number" id="digitCount" value="3" min="2" max="10" style="width: 50px;">
+            <button class="btn-blue" onclick="genRand()">🎲 Генерирай</button>
+        </div>
+        <div style="color: #ccc; font-size: 1.3rem;">│</div>
+        <div class="setup-group">
+            <input type="text" id="manualN1" placeholder="Умаляемо" style="width: 90px;" inputmode="numeric">
+            <span style="font-weight:bold; font-size:1.2rem;">−</span>
+            <input type="text" id="manualN2" placeholder="Умалител" style="width: 90px;" inputmode="numeric">
+            <button class="btn-purple" onclick="loadManual()">📥 Зареди</button>
+        </div>
+    </div>
+
+    <table id="mathTable"></table>
+
+    <div style="text-align:center;">
+        <button class="btn-green" id="btnCheck" onclick="check()">✔ Провери разликата</button>
+        <button class="btn-next" id="btnNext" onclick="genRand()">➡ Следваща задача</button>
+    </div>
+    <p id="msg"></p>
+</div>
+
+<script>
+    let v1, v2;
+    let scoreCorrect = 0, scoreWrong = 0;
+
+    window.onload = () => render("982", "367", true);
+
+    function toggleExp() {
+        const e = document.getElementById('explanation');
+        e.style.display = (e.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function toggleDot(i) {
+        const d = document.getElementById(`dot-${i}`);
+        const cell = document.getElementById(`minuend-${i}`);
+        if (d.style.display === 'block') {
+            d.style.display = 'none';
+            cell.classList.remove('has-dot');
+        } else {
+            d.style.display = 'block';
+            cell.classList.add('has-dot');
+        }
+    }
+
+    function clearInputs() {
+        document.querySelectorAll('.ten-box, .input-res').forEach(i => {
+            i.value = '';
+            i.classList.remove('correct', 'wrong');
+        });
+        document.querySelectorAll('.dot').forEach(d => d.style.display = 'none');
+        document.querySelectorAll('.minuend').forEach(c => c.classList.remove('has-dot'));
+        document.getElementById('msg').innerText = '';
+        document.getElementById('btnNext').style.display = 'none';
+        document.getElementById('btnCheck').style.display = '';
+    }
+
+    function render(n1, n2, demo = false) {
+        v1 = parseInt(n1); v2 = parseInt(n2);
+        const s1 = v1.toString();
+        const s2 = v2.toString().padStart(s1.length, '0');
+        const diff = (v1 - v2).toString().padStart(s1.length, '0');
+        const table = document.getElementById('mathTable');
+        table.innerHTML = '';
+        document.getElementById('msg').innerText = '';
+        document.getElementById('btnNext').style.display = 'none';
+        document.getElementById('btnCheck').style.display = '';
+
+        // Намираме водещите нули в разликата
+        const realDiff = (v1 - v2).toString();
+        const leadingZeros = s1.length - realDiff.length;
+
+        let rTen = '<tr><td class="sign-col"></td>';
+        let rDot = '<tr><td class="sign-col"></td>';
+        let rN1 = '<tr><td class="sign-col"><span class="minus-sign"></span></td>';
+        let rN2 = '<tr><td class="sign-col"><span class="minus-sign">−</span></td>';
+        let rLine = '<tr><td class="sign-col"></td>';
+        let rRes = '<tr><td class="sign-col"></td>';
+
+        for (let i = 0; i < s1.length; i++) {
+            const demoShowDot = demo && i === 1;
+            const demoTenVal = demo && i === 2 ? '10' : '';
+            const demoAns = demo ? (i < leadingZeros ? '' : diff[i]) : '';
+
+            rTen += `<td class="digit-col"><input type="text" class="ten-box" id="ten-${i}" maxlength="2" value="${demoTenVal}" tabindex="${i + 1}"></td>`;
+            rDot += `<td class="digit-col"><div class="dot-area"><div id="dot-${i}" class="dot" style="display:${demoShowDot ? 'block' : 'none'}"></div></div></td>`;
+            rN1 += `<td class="digit-col"><span class="digit minuend ${demoShowDot ? 'has-dot' : ''}" id="minuend-${i}" onclick="toggleDot(${i})">${s1[i]}</span></td>`;
+            rN2 += `<td class="digit-col"><span class="digit subtrahend">${s2[i]}</span></td>`;
+            rLine += `<td class="digit-col"><div class="line-cell"></div></td>`;
+            const isLeadingZero = i < leadingZeros;
+            if (isLeadingZero) {
+                rRes += `<td class="digit-col"><input type="text" class="input-res leading-zero" id="res-${i}" value="" disabled tabindex="-1"></td>`;
+            } else {
+                rRes += `<td class="digit-col"><input type="text" class="input-res" id="res-${i}" maxlength="1" value="${demoAns}" tabindex="${s1.length + i + 1}" inputmode="numeric"></td>`;
+            }
+        }
+
+        table.innerHTML = rTen + '</tr>' + rDot + '</tr>' + rN1 + '</tr>' + rN2 + '</tr>' + rLine + '</tr>' + rRes + '</tr>';
+
+        // Автоматично преминаване към следващото поле при попълване
+        const activeRes = document.querySelectorAll('.input-res:not(.leading-zero)');
+        activeRes.forEach((inp, idx, all) => {
+            inp.addEventListener('input', () => {
+                if (inp.value.length === 1 && idx < all.length - 1) {
+                    all[idx + 1].focus();
+                }
+            });
+        });
+
+        document.querySelectorAll('.ten-box').forEach((inp, idx, all) => {
+            inp.addEventListener('input', () => {
+                if (inp.value.length === 2 && idx < all.length - 1) {
+                    all[idx + 1].focus();
+                }
+            });
+        });
+    }
+
+    function genRand() {
+        const d = parseInt(document.getElementById('digitCount').value) || 3;
+        const min = Math.pow(10, d - 1);
+        const max = Math.pow(10, d) - 1;
+        let n1, n2;
+
+        // Гарантираме поне едно заемане
+        do {
+            n1 = Math.floor(min + Math.random() * (max - min + 1));
+            n2 = Math.floor(min + Math.random() * (n1 - min));
+        } while (!needsBorrow(n1, n2) || n2 < min);
+
+        render(n1.toString(), n2.toString());
+    }
+
+    // Проверка дали изваждането изисква заемане
+    function needsBorrow(a, b) {
+        const sa = a.toString();
+        const sb = b.toString().padStart(sa.length, '0');
+        for (let i = sa.length - 1; i >= 0; i--) {
+            if (parseInt(sa[i]) < parseInt(sb[i])) return true;
+        }
+        return false;
+    }
+
+    function loadManual() {
+        const n1 = document.getElementById('manualN1').value.trim();
+        const n2 = document.getElementById('manualN2').value.trim();
+        if (!n1 || !n2 || isNaN(n1) || isNaN(n2) || parseInt(n1) < 0 || parseInt(n2) < 0) {
+            alert('Моля, въведете валидни цели положителни числа.');
+            return;
+        }
+        if (parseInt(n1) < parseInt(n2)) {
+            alert('Умаляемото трябва да е по-голямо или равно на умалителя!');
+            return;
+        }
+        render(parseInt(n1).toString(), parseInt(n2).toString());
+    }
+
+    function check() {
+        const inputs = document.querySelectorAll('.input-res');
+        const activeInputs = document.querySelectorAll('.input-res:not(.leading-zero)');
+        let ansString = '';
+        let allFilled = true;
+
+        activeInputs.forEach(inp => {
+            ansString += inp.value;
+            if (inp.value.trim() === '') allFilled = false;
+        });
+
+        const m = document.getElementById('msg');
+
+        if (!allFilled) {
+            m.innerText = '⚠️ Попълни всички полета на резултата!';
+            m.style.color = '#f39c12';
+            for (const inp of activeInputs) {
+                if (inp.value.trim() === '') { inp.focus(); break; }
+            }
+            return;
+        }
+
+        const correctAnswer = v1 - v2;
+        const userAnswer = parseInt(ansString);
+
+        if (userAnswer === correctAnswer) {
+            m.innerText = '✅ Браво! Верен отговор!';
+            m.style.color = '#27ae60';
+            scoreCorrect++;
+            activeInputs.forEach(inp => inp.classList.add('correct'));
+            document.getElementById('btnCheck').style.display = 'none';
+            document.getElementById('btnNext').style.display = '';
+        } else {
+            m.innerText = '❌ Опитай пак! Провери заеманията.';
+            m.style.color = '#e74c3c';
+            scoreWrong++;
+            const correctStr = correctAnswer.toString();
+            const padded = correctStr.padStart(activeInputs.length, '0');
+
+            activeInputs.forEach((inp, i) => {
+                if (inp.value === padded[i]) {
+                    inp.classList.remove('wrong');
+                    inp.classList.add('correct');
+                } else {
+                    inp.classList.remove('correct');
+                    inp.classList.add('wrong');
+                }
+            });
+        }
+
+        document.getElementById('scoreCorrect').innerText = scoreCorrect;
+        document.getElementById('scoreWrong').innerText = scoreWrong;
+    }
+
+    // Enter за проверка
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const btnCheck = document.getElementById('btnCheck');
+            const btnNext = document.getElementById('btnNext');
+            if (btnNext.style.display !== 'none' && btnNext.style.display !== '') {
+                // btnNext не е показан по подразбиране, проверяваме правилно
+            }
+            if (btnCheck.style.display !== 'none') {
+                check();
+            } else {
+                genRand();
+            }
+        }
+    });
+</script>
+</body>
+</html>
