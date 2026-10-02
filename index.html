@@ -102,9 +102,9 @@
 .subtraction-demo[data-step="2"] .subtraction-demo__press-ring { display: block; animation: subtraction-demo-ring .6s .4s ease-out both; }
 .subtraction-demo[data-step="2"] .subtraction-demo__dot.is-visible { animation: subtraction-demo-dot .25s .5s both; }
 .subtraction-demo[data-step="3"] .subtraction-demo__ten.is-filled,
-.subtraction-demo[data-step="4"] [data-demo-result="units"],
-.subtraction-demo[data-step="5"] [data-demo-result="tens"],
-.subtraction-demo[data-step="6"] [data-demo-result="hundreds"] { animation: subtraction-demo-write .4s ease-out both; }
+.subtraction-demo[data-step="5"] [data-demo-result="units"],
+.subtraction-demo[data-step="6"] [data-demo-result="tens"],
+.subtraction-demo[data-step="7"] [data-demo-result="hundreds"] { animation: subtraction-demo-write .4s ease-out both; }
 .subtraction-demo.is-paused .subtraction-demo__pointer,
 .subtraction-demo.is-paused .subtraction-demo__press-ring,
 .subtraction-demo.is-paused .subtraction-demo__dot,
@@ -297,7 +297,7 @@
         </div>
 
         <div class="subtraction-demo__caption" role="status" aria-live="polite" aria-atomic="true">
-            <span class="subtraction-demo__eyebrow" id="subtraction-demo-count">Стъпка 1 от 8</span>
+            <span class="subtraction-demo__eyebrow" id="subtraction-demo-count">Стъпка 1 от 9</span>
             <h2 id="subtraction-demo-step-title">Започваме отдясно</h2>
             <p id="subtraction-demo-step-text">Подреждаме 982 − 367. Започваме от единиците вдясно.</p>
             <p class="subtraction-demo__formula" id="subtraction-demo-formula">982 − 367 = ?</p>
@@ -310,7 +310,7 @@
         <button class="subtraction-demo__button" id="subtraction-demo-next" type="button" aria-label="Следваща стъпка" title="Следваща стъпка"><span class="subtraction-demo__button-label">Напред</span><span aria-hidden="true">→</span></button>
         <button class="subtraction-demo__button" id="subtraction-demo-replay" type="button" aria-label="Върни обяснението в началото" title="Отначало" disabled><span aria-hidden="true">↻</span><span class="subtraction-demo__button-label">Отначало</span></button>
     </div>
-    <progress class="subtraction-demo__progress" id="subtraction-demo-progress" max="8" value="1" aria-label="Напредък на обяснението"></progress>
+    <progress class="subtraction-demo__progress" id="subtraction-demo-progress" max="9" value="1" aria-label="Напредък на обяснението"></progress>
 </section>
 
 <section class="instructions-box" aria-labelledby="trainer-instructions">
@@ -575,7 +575,8 @@
             { title: 'Единиците не достигат', text: 'От 2 единици не можем да извадим 7. Вземаме 1 десетица от 8-те десетици.', formula: '2 < 7', active: 'units', duration: 4000 },
             { title: 'Поставяме точка над 8', text: 'Кликваме върху 8. Точката напомня, че сме взели 1 десетица. Цифрата 8 остава написана.', formula: '8 десетици − 1 десетица', active: 'units', donor: true, duration: 4800 },
             { title: 'Записваме 10 над 2', text: 'Взетата десетица се превръща в 10 единици. Записваме 10 в синьото квадратче над 2.', formula: '1 десетица = 10 единици', active: 'units', duration: 4400 },
-            { title: 'Изваждаме единиците', text: 'Към 2 прибавяме 10 и изваждаме 7. Записваме 5 под единиците.', formula: '(10 + 2) − 7 = 5', active: 'units', duration: 4200 },
+            { title: 'Изваждаме 7 от 10', text: 'От 10-те получени единици изваждаме 7. Остават 3 единици.', formula: '10 − 7 = 3', active: 'units', duration: 4000 },
+            { title: 'Прибавяме 2', text: 'Към останалите 3 прибавяме 2-те единици, които имахме в началото. Записваме 5 под единиците.', formula: '3 + 2 = 5', active: 'units', duration: 4200 },
             { title: 'Изваждаме десетиците', text: 'Точката над 8 напомня да намалим десетиците с 1. След това изваждаме 6 и записваме 1.', formula: '(8 − 1) − 6 = 1', active: 'tens', duration: 4600 },
             { title: 'Изваждаме стотиците', text: 'От 9 стотици изваждаме 3 стотици. Записваме 6 под стотиците.', formula: '9 − 3 = 6', active: 'hundreds', duration: 3800 },
             { title: 'Разликата е 615', text: 'В тренажора попълни цифрите и натисни „Провери разликата“. Можеш да провериш и със събиране:', formula: '615 + 367 = 982 ✓', active: '', duration: 0 }
@@ -631,9 +632,9 @@
             unitsTen.classList.toggle('is-filled', step >= 3);
             tensDot.classList.toggle('is-visible', step >= 2);
             tensDigit.classList.toggle('is-borrowed', step >= 2);
-            results.units.textContent = step >= 4 ? '5' : '';
-            results.tens.textContent = step >= 5 ? '1' : '';
-            results.hundreds.textContent = step >= 6 ? '6' : '';
+            results.units.textContent = step >= 5 ? '5' : '';
+            results.tens.textContent = step >= 6 ? '1' : '';
+            results.hundreds.textContent = step >= 7 ? '6' : '';
             Object.values(results).forEach(function (result) { result.classList.toggle('is-correct', step === steps.length - 1); });
             demo.querySelectorAll('[data-demo-column]').forEach(function (column) {
                 column.classList.toggle('is-active', column.dataset.demoColumn === current.active);
