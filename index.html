@@ -249,13 +249,82 @@
             .minus-sign { font-size: 2.2rem; }
             .sign-col { width: 35px; }
         }
+
+        /* Welcome screen and navigation between the lesson and trainer. */
+        .app-shell { width: 100%; }
+        .app-view { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .app-view[hidden] { display: none !important; }
+        .welcome-screen {
+            min-height: calc(100vh - 20px); min-height: calc(100svh - 20px);
+            display: grid; place-items: center; padding: 24px 10px;
+        }
+        .welcome-card {
+            width: 100%; max-width: 660px; padding: 64px 48px;
+            background: #fff; border: 1px solid #deebe3; border-radius: 24px;
+            box-shadow: 0 14px 45px rgba(35, 74, 51, .08); text-align: center;
+        }
+        .welcome-card h1 {
+            margin: 0 0 38px; color: #244c37;
+            font-size: clamp(1.9rem, 4.5vw, 2.65rem); line-height: 1.2;
+            font-weight: 750; letter-spacing: -.025em; text-wrap: balance;
+        }
+        .welcome-actions { display: flex; justify-content: center; gap: 14px; }
+        .welcome-actions button {
+            flex: 1; justify-content: center; min-height: 58px; padding: 15px 22px;
+            border: 2px solid #247d4b; border-radius: 12px; font-size: 1.15rem;
+            background: #fff; color: #247d4b;
+        }
+        .welcome-actions .welcome-game { background: #247d4b; color: #fff; }
+        .welcome-actions button:hover { filter: none; background: #f0f8f3; }
+        .welcome-actions .welcome-game:hover { background: #1d683e; }
+        .welcome-actions button:focus-visible, .app-nav button:focus-visible {
+            outline: 3px solid #2980b9; outline-offset: 4px;
+        }
+        .app-nav {
+            width: 95%; max-width: 800px; display: flex; justify-content: space-between;
+            gap: 12px; margin: 10px 0 20px;
+        }
+        .app-nav button {
+            min-height: 44px; border: 1px solid #d5e3da;
+            background: #fff; color: #285d3f;
+        }
+        .game-title { margin: 0 0 18px; color: #244c37; font-size: 1.65rem; }
+        @media (max-width: 480px) {
+            .welcome-card { padding: 42px 24px; border-radius: 20px; }
+            .welcome-card h1 { margin-bottom: 30px; }
+            .welcome-actions { flex-direction: column; gap: 12px; }
+            .welcome-actions button { flex: none; width: 100%; }
+            .app-nav button { padding: 10px 12px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .welcome-actions button, .app-nav button { transition: none; }
+        }
+        @media print {
+            .welcome-screen, .app-nav, .game-title { display: none !important; }
+        }
     </style>
 </head>
 <body>
 
+<main class="app-shell" id="app-shell" data-view="home">
+<section class="app-view welcome-screen" id="welcome-screen" data-view="home" aria-labelledby="welcome-title">
+    <div class="welcome-card">
+        <h1 id="welcome-title" tabindex="-1">Изваждане със заемане</h1>
+        <div class="welcome-actions">
+            <button type="button" onclick="showView('lesson')">Как се решава</button>
+            <button type="button" class="welcome-game" onclick="showView('game')">Към играта</button>
+        </div>
+    </div>
+</section>
+
+<section class="app-view" id="lesson-screen" data-view="lesson" aria-labelledby="subtraction-demo-title" hidden>
+    <nav class="app-nav" aria-label="Навигация в обяснението">
+        <button type="button" onclick="showView('home')">← Начало</button>
+        <button type="button" onclick="showView('game')">Към играта</button>
+    </nav>
 <section class="subtraction-demo" id="subtraction-demo" aria-labelledby="subtraction-demo-title">
     <header class="subtraction-demo__header">
-        <h1 id="subtraction-demo-title">Изваждане със заемане</h1>
+        <h1 id="subtraction-demo-title" tabindex="-1">Изваждане със заемане</h1>
         <p>Виж примера <strong>982 − 367</strong> със същите означения като в тренажора.</p>
     </header>
 
@@ -313,13 +382,20 @@
     <progress class="subtraction-demo__progress" id="subtraction-demo-progress" max="9" value="1" aria-label="Напредък на обяснението"></progress>
 </section>
 
+</section>
+
+<section class="app-view" id="game-screen" data-view="game" aria-labelledby="game-title" hidden>
+    <nav class="app-nav" aria-label="Навигация в играта">
+        <button type="button" onclick="showView('home')">← Начало</button>
+        <button type="button" onclick="showView('lesson')">Как се решава</button>
+    </nav>
+    <h1 class="game-title" id="game-title" tabindex="-1">Изваждане със заемане</h1>
 <section class="instructions-box" aria-labelledby="trainer-instructions">
     <h2 id="trainer-instructions">Опитай сам в тренажора</h2>
     <p>Постави точка над цифрата, от която заемаш, запиши <b>10</b> над цифрата, към която го прибавяш, и попълни разликата отдясно наляво. Натисни <em>Провери разликата</em>. За нова задача избери <em>Генерирай</em> или въведи свои числа и натисни <em>Зареди</em>.</p>
 </section>
 
 <div class="toolbar">
-    <button class="btn-info" onclick="toggleExp()">🎬 Анимирано обяснение</button>
     <button class="btn-print" onclick="window.print()">🖨️ Принтирай</button>
     <button class="btn-red" onclick="clearInputs()">🧹 Изчисти</button>
 </div>
@@ -354,6 +430,9 @@
     <p id="msg"></p>
 </div>
 
+</section>
+</main>
+
 <script>
     let v1, v2;
     let scoreCorrect = 0, scoreWrong = 0;
@@ -361,10 +440,7 @@
     window.onload = () => render("982", "367", true);
 
     function toggleExp() {
-        const demo = document.getElementById('subtraction-demo');
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        demo.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
-        document.getElementById('subtraction-demo-play').focus({ preventScroll: true });
+        showView('lesson');
     }
 
     function toggleDot(i) {
@@ -688,6 +764,7 @@
         next.addEventListener('click', function () { goTo(step + 1); });
         replay.addEventListener('click', function () { goTo(0); });
         document.addEventListener('visibilitychange', function () { if (document.hidden && playing) pause(); });
+        document.addEventListener('subtraction-demo-pause', pause);
         window.addEventListener('pagehide', pause);
         render();
     }
@@ -696,6 +773,24 @@
     else initializeSubtractionDemo();
 }());
 </script>
+
+<script>
+    function showView(name, focusHeading = true) {
+        const views = { home: 'welcome-screen', lesson: 'lesson-screen', game: 'game-screen' };
+        if (!Object.prototype.hasOwnProperty.call(views, name)) return;
+        document.dispatchEvent(new Event('subtraction-demo-pause'));
+        for (const [viewName, id] of Object.entries(views)) {
+            document.getElementById(id).hidden = viewName !== name;
+        }
+        document.getElementById('app-shell').dataset.view = name;
+        if (focusHeading) {
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+            document.getElementById(views[name]).querySelector('h1').focus({ preventScroll: true });
+        }
+    }
+    showView('home', false);
+</script>
 </body>
 </html>
+
 
