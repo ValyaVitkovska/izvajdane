@@ -9,8 +9,15 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
 
         .instructions-box { background: #fff; border-left: 5px solid #27ae60; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 750px; width: 95%; margin-bottom: 15px; }
-        .instructions-box h3 { margin: 0 0 8px 0; }
+        .instructions-box h1 { margin: 0 0 14px; font-size: 1.4rem; }
+        .instructions-box h2 { margin: 0 0 8px; font-size: 1.15rem; }
         .instructions-box p { margin: 0; line-height: 1.5; }
+        .instructions-box ol { margin: 0; padding-left: 24px; line-height: 1.5; }
+        .instructions-box li + li { margin-top: 7px; }
+        .instructions-box .borrow-note { margin-top: 12px; }
+        .worked-example { margin-top: 14px; padding: 12px; background: #eafaf1; border-radius: 6px; line-height: 1.5; }
+        .worked-example h2 { font-size: 1.05rem; }
+        .worked-example p + p { margin-top: 6px; }
 
         .explanation-panel { background: #fffdf5; border: 1px solid #f39c12; padding: 15px; border-radius: 8px; display: none; max-width: 750px; width: 95%; margin-bottom: 15px; line-height: 1.7; }
 
@@ -132,12 +139,33 @@
 </head>
 <body>
 
-<div class="instructions-box">
-    <h3>🧮 Изваждане на числа със "заемане"</h3>
-    <p><b>1.</b> Кликни върху цифрата от умаляемото, за да покажеш точка (•) — знак за заемане.<br>
-       <b>2.</b> Напиши <b>10</b> в синьото квадратче над съответната цифра.<br>
-       <b>3.</b> Попълни разликата и натисни <em>Провери</em>.</p>
-</div>
+<section class="instructions-box" aria-labelledby="subtraction-title">
+    <h1 id="subtraction-title">🧮 Изваждане на числа със „заемане“</h1>
+    <h2>Как извършваме писмено изваждане?</h2>
+    <ol>
+        <li><b>Подреждаме числата едно под друго:</b> единици под единици, десетици под десетици, стотици под стотици. От горното число (умаляемото) изваждаме долното (умалителя).</li>
+        <li><b>Започваме отдясно наляво:</b> първо изваждаме единиците, после десетиците, стотиците и т.н.</li>
+        <li><b>Ако единиците в текущия разред не достигат, заемаме:</b> вземаме 1 единица от съседния разред вляво и я преобразуваме в 10 единици от текущия разред. Например 1 десетица = 10 единици. Добавяме 10 към горната цифра и изваждаме.</li>
+        <li><b>Продължаваме наляво:</b> помним, че разредът, от който сме взели, е намален с 1. Записваме всяка получена цифра под съответния разред.</li>
+    </ol>
+    <p class="borrow-note"><b>Ако вляво има нули:</b> търсим първата ненулева цифра вляво и я намаляваме с 1. Нулите между нея и текущия разред стават 9, а към цифрата в текущия разред добавяме 10.</p>
+    <div class="worked-example">
+        <h2>Пример: 982 − 367 = 615</h2>
+        <p><b>Единици:</b> 2 &lt; 7, затова вземаме 1 десетица от 8. Получаваме 12 − 7 = <b>5</b>, а десетиците остават 7.<br>
+           <b>Десетици:</b> 7 − 6 = <b>1</b>.<br>
+           <b>Стотици:</b> 9 − 3 = <b>6</b>.</p>
+        <p><b>Проверка със събиране:</b> разлика + умалител = умаляемо → 615 + 367 = 982.</p>
+    </div>
+</section>
+
+<section class="instructions-box" aria-labelledby="trainer-instructions">
+    <h2 id="trainer-instructions">Как да работиш с тренажора</h2>
+    <ol>
+        <li>Кликни върху цифрата от умаляемото, <b>от чийто разред заемаш</b>, за да покажеш точка (•). Тя напомня, че този разред е намален с 1.</li>
+        <li>Напиши <b>10</b> в синьото квадратче над цифрата, <b>към която добавяш 10</b>.</li>
+        <li>Попълни разликата и натисни <em>Провери разликата</em>. За нова задача натисни <em>Генерирай</em> или въведи свои числа и натисни <em>Зареди</em>.</li>
+    </ol>
+</section>
 
 <div class="toolbar">
     <button class="btn-info" onclick="toggleExp()">💡 Обяснение</button>
