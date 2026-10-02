@@ -9,17 +9,131 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
 
         .instructions-box { background: #fff; border-left: 5px solid #27ae60; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 750px; width: 95%; margin-bottom: 15px; }
-        .instructions-box h1 { margin: 0 0 14px; font-size: 1.4rem; }
         .instructions-box h2 { margin: 0 0 8px; font-size: 1.15rem; }
         .instructions-box p { margin: 0; line-height: 1.5; }
-        .instructions-box ol { margin: 0; padding-left: 24px; line-height: 1.5; }
-        .instructions-box li + li { margin-top: 7px; }
-        .instructions-box .borrow-note { margin-top: 12px; }
-        .worked-example { margin-top: 14px; padding: 12px; background: #eafaf1; border-radius: 6px; line-height: 1.5; }
-        .worked-example h2 { font-size: 1.05rem; }
-        .worked-example p + p { margin-top: 6px; }
 
-        .explanation-panel { background: #fffdf5; border: 1px solid #f39c12; padding: 15px; border-radius: 8px; display: none; max-width: 750px; width: 95%; margin-bottom: 15px; line-height: 1.7; }
+/* All tutorial styles are isolated from the interactive trainer. */
+.subtraction-demo {
+    width: 95%; max-width: 800px; margin: 0 0 15px; padding: 17px 20px 14px;
+    background: #fff; color: #253548; border: 1px solid #dce9e2;
+    border-left: 5px solid #27ae60; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
+}
+.subtraction-demo .subtraction-demo__header h1 { margin: 0 0 5px; font-size: 1.35rem; line-height: 1.3; }
+.subtraction-demo .subtraction-demo__header p { margin: 0; font-size: .94rem; line-height: 1.5; color: #536473; }
+.subtraction-demo .subtraction-demo__body { display: flex; align-items: center; gap: 25px; padding: 15px 0; }
+.subtraction-demo .subtraction-demo__board {
+    position: relative; flex: 0 0 auto; display: grid; grid-template-columns: 24px repeat(3, 68px);
+    gap: 4px; padding: 5px 4px 6px 0;
+}
+.subtraction-demo .subtraction-demo__column {
+    display: grid; grid-template-rows: 20px 33px 21px 49px 49px 6px 45px;
+    justify-items: center; align-items: center; border-radius: 9px;
+    transition: background-color .25s, box-shadow .25s;
+}
+.subtraction-demo .subtraction-demo__column.is-active { background: #eaf5fc; box-shadow: 0 0 0 2px #b6d9ef; }
+.subtraction-demo .subtraction-demo__column.is-donor { background: #fff0ed; box-shadow: 0 0 0 2px #f3bdb3; }
+.subtraction-demo .subtraction-demo__place { font-size: .64rem; letter-spacing: .01em; color: #627381; }
+.subtraction-demo .subtraction-demo__ten {
+    display: inline-flex; align-items: center; justify-content: center; width: 43px; height: 32px;
+    border: 1px solid #c8d1d7; border-radius: 4px; background: #f0f8ff;
+    color: #2980b9; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 1.05rem; font-weight: 700;
+}
+.subtraction-demo .subtraction-demo__ten.is-filled { border-color: #3498db; }
+.subtraction-demo .subtraction-demo__dot-space { display: flex; align-items: center; justify-content: center; height: 21px; }
+.subtraction-demo .subtraction-demo__dot {
+    width: 14px; height: 14px; border: 2px solid #c0392b; background: #e74c3c;
+    border-radius: 50%; visibility: hidden;
+}
+.subtraction-demo .subtraction-demo__dot.is-visible { visibility: visible; }
+.subtraction-demo .subtraction-demo__digit {
+    position: relative; display: inline-flex; justify-content: center; align-items: center;
+    width: 58px; height: 49px; color: #080808; font: 700 2.75rem/1.1 'Courier New', monospace;
+}
+.subtraction-demo .subtraction-demo__digit.is-borrowed { color: #c0392b; }
+.subtraction-demo .subtraction-demo__digit--lower { color: #333; }
+.subtraction-demo .subtraction-demo__line { width: 100%; height: 4px; background: #333; }
+.subtraction-demo .subtraction-demo__result {
+    display: inline-flex; align-items: center; justify-content: center; align-self: end;
+    width: 50px; height: 35px; border: 1px solid #cccbb8; border-radius: 4px; background: #fffde7;
+    color: #080808; font: 700 1.35rem/1 'Courier New', monospace;
+}
+.subtraction-demo .subtraction-demo__result.is-correct { border-color: #27ae60; background: #eafaf1; }
+.subtraction-demo .subtraction-demo__sign {
+    position: absolute; left: 0; top: 127px; width: 24px; height: 49px;
+    display: flex; align-items: center; justify-content: center; color: #95a5a6; font-size: 2.2rem; font-weight: 700;
+}
+/* The sign is the first child, so the hundreds column is placed explicitly. */
+.subtraction-demo .subtraction-demo__column[data-demo-column="hundreds"] { grid-column: 2; }
+.subtraction-demo .subtraction-demo__caption { flex: 1 1 230px; min-width: 0; }
+.subtraction-demo .subtraction-demo__eyebrow { font-size: .73rem; font-weight: 700; color: #237949; }
+.subtraction-demo .subtraction-demo__caption h2 { margin: 7px 0 8px; font-size: 1.16rem; line-height: 1.3; }
+.subtraction-demo .subtraction-demo__caption p { margin: 0; line-height: 1.55; font-size: .97rem; }
+.subtraction-demo .subtraction-demo__caption .subtraction-demo__formula {
+    display: inline-block; margin-top: 12px; padding: 7px 10px; border-radius: 6px;
+    color: #145d35; background: #eafaf1; font-size: 1.06rem; font-weight: 700; line-height: 1.35;
+}
+.subtraction-demo .subtraction-demo__controls { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+.subtraction-demo .subtraction-demo__button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px;
+    padding: 8px 11px; border: 1px solid #cad6d0; border-radius: 6px;
+    background: #f4f8f6; color: #30483b; font: 600 .85rem/1.2 'Segoe UI', Tahoma, sans-serif;
+    cursor: pointer; transition: background-color .15s, border-color .15s; transform: none;
+}
+.subtraction-demo .subtraction-demo__button--play { min-width: 105px; background: #27ae60; border-color: #27ae60; color: #fff; }
+.subtraction-demo .subtraction-demo__button:hover:not(:disabled) { filter: none; transform: none; background: #e4efe9; border-color: #96b9a4; }
+.subtraction-demo .subtraction-demo__button--play:hover:not(:disabled) { background: #218f50; border-color: #218f50; }
+.subtraction-demo .subtraction-demo__button:focus-visible { outline: 3px solid #3498db; outline-offset: 3px; }
+.subtraction-demo .subtraction-demo__button:disabled {
+    background: #f0f1f2; border-color: #e2e4e6; color: #9aa2a8; cursor: default;
+    box-shadow: none; filter: none; transform: none;
+}
+.subtraction-demo .subtraction-demo__progress {
+    display: block; width: 100%; height: 5px; margin-top: 12px; border: 0; border-radius: 5px;
+    appearance: none; -webkit-appearance: none; accent-color: #27ae60; background: #e7efea; overflow: hidden;
+}
+.subtraction-demo .subtraction-demo__progress::-webkit-progress-bar { background: #e7efea; border-radius: 5px; }
+.subtraction-demo .subtraction-demo__progress::-webkit-progress-value { background: #27ae60; border-radius: 5px; transition: width .3s; }
+.subtraction-demo .subtraction-demo__progress::-moz-progress-bar { background: #27ae60; border-radius: 5px; }
+.subtraction-demo .subtraction-demo__pointer { display: none; position: absolute; width: 27px; height: 34px; z-index: 2; left: 32px; top: 29px; }
+.subtraction-demo .subtraction-demo__pointer svg { display: block; width: 100%; height: 100%; }
+.subtraction-demo .subtraction-demo__press-ring { display: none; position: absolute; width: 46px; height: 46px; border: 3px solid #e74c3c; border-radius: 50%; opacity: 0; }
+.subtraction-demo[data-step="2"] .subtraction-demo__pointer { display: block; animation: subtraction-demo-click 1.05s ease-in-out both; }
+.subtraction-demo[data-step="2"] .subtraction-demo__press-ring { display: block; animation: subtraction-demo-ring .6s .4s ease-out both; }
+.subtraction-demo[data-step="2"] .subtraction-demo__dot.is-visible { animation: subtraction-demo-dot .25s .5s both; }
+.subtraction-demo[data-step="3"] .subtraction-demo__ten.is-filled,
+.subtraction-demo[data-step="4"] [data-demo-result="units"],
+.subtraction-demo[data-step="5"] [data-demo-result="tens"],
+.subtraction-demo[data-step="6"] [data-demo-result="hundreds"] { animation: subtraction-demo-write .4s ease-out both; }
+.subtraction-demo.is-paused .subtraction-demo__pointer,
+.subtraction-demo.is-paused .subtraction-demo__press-ring,
+.subtraction-demo.is-paused .subtraction-demo__dot,
+.subtraction-demo.is-paused .subtraction-demo__ten,
+.subtraction-demo.is-paused .subtraction-demo__result { animation-play-state: paused; }
+@keyframes subtraction-demo-click { 0% { transform: translate(14px, 12px); opacity: 0; } 30% { transform: translate(0, 0); opacity: 1; } 50% { transform: translate(-2px, -4px) scale(.94); opacity: 1; } 75% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(4px, 6px); opacity: 0; } }
+@keyframes subtraction-demo-ring { 0% { opacity: .7; transform: scale(.65); } 100% { opacity: 0; transform: scale(1.3); } }
+@keyframes subtraction-demo-dot { 0% { opacity: 0; transform: scale(.2); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes subtraction-demo-write { 0% { opacity: .3; transform: scale(.8); } 100% { opacity: 1; transform: scale(1); } }
+@media (max-width: 620px) {
+    .subtraction-demo { padding: 15px 14px 12px; }
+    .subtraction-demo .subtraction-demo__body { flex-direction: column; gap: 12px; padding: 12px 0 15px; }
+    .subtraction-demo .subtraction-demo__caption { flex-basis: auto; align-self: stretch; min-height: 130px; }
+    .subtraction-demo .subtraction-demo__caption h2 { margin-top: 5px; }
+}
+@media (max-width: 420px) {
+    .subtraction-demo { width: 100%; padding: 13px 11px 11px; border-left-width: 4px; }
+    .subtraction-demo .subtraction-demo__header h1 { font-size: 1.18rem; }
+    .subtraction-demo .subtraction-demo__header p { font-size: .88rem; }
+    .subtraction-demo .subtraction-demo__button-label { display: none; }
+    .subtraction-demo .subtraction-demo__button { min-width: 40px; font-size: .95rem; }
+    .subtraction-demo .subtraction-demo__button--play { min-width: 104px; font-size: .85rem; }
+    .subtraction-demo .subtraction-demo__caption p { font-size: .93rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .subtraction-demo *, .subtraction-demo *::before, .subtraction-demo *::after { animation: none !important; transition: none !important; }
+    .subtraction-demo .subtraction-demo__pointer, .subtraction-demo .subtraction-demo__press-ring { display: none !important; }
+}
+@media print { .subtraction-demo { display: none !important; } }
 
         .toolbar { margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
@@ -139,47 +253,75 @@
 </head>
 <body>
 
-<section class="instructions-box" aria-labelledby="subtraction-title">
-    <h1 id="subtraction-title">🧮 Изваждане на числа със „заемане“</h1>
-    <h2>Как извършваме писмено изваждане?</h2>
-    <ol>
-        <li><b>Подреждаме числата едно под друго:</b> единици под единици, десетици под десетици, стотици под стотици. От горното число (умаляемото) изваждаме долното (умалителя).</li>
-        <li><b>Започваме отдясно наляво:</b> първо изваждаме единиците, после десетиците, стотиците и т.н.</li>
-        <li><b>Ако единиците в текущия разред не достигат, заемаме:</b> вземаме 1 единица от съседния разред вляво и я преобразуваме в 10 единици от текущия разред. Например 1 десетица = 10 единици. Добавяме 10 към горната цифра и изваждаме.</li>
-        <li><b>Продължаваме наляво:</b> помним, че разредът, от който сме взели, е намален с 1. Записваме всяка получена цифра под съответния разред.</li>
-    </ol>
-    <p class="borrow-note"><b>Ако вляво има нули:</b> търсим първата ненулева цифра вляво и я намаляваме с 1. Нулите между нея и текущия разред стават 9, а към цифрата в текущия разред добавяме 10.</p>
-    <div class="worked-example">
-        <h2>Пример: 982 − 367 = 615</h2>
-        <p><b>Единици:</b> 2 &lt; 7, затова вземаме 1 десетица от 8. Получаваме 12 − 7 = <b>5</b>, а десетиците остават 7.<br>
-           <b>Десетици:</b> 7 − 6 = <b>1</b>.<br>
-           <b>Стотици:</b> 9 − 3 = <b>6</b>.</p>
-        <p><b>Проверка със събиране:</b> разлика + умалител = умаляемо → 615 + 367 = 982.</p>
+<section class="subtraction-demo" id="subtraction-demo" aria-labelledby="subtraction-demo-title">
+    <header class="subtraction-demo__header">
+        <h1 id="subtraction-demo-title">Изваждане със заемане</h1>
+        <p>Виж примера <strong>982 − 367</strong> със същите означения като в тренажора.</p>
+    </header>
+
+    <div class="subtraction-demo__body">
+        <div class="subtraction-demo__board" aria-hidden="true">
+            <div class="subtraction-demo__sign">−</div>
+            <div class="subtraction-demo__column" data-demo-column="hundreds">
+                <span class="subtraction-demo__place">стотици</span>
+                <span class="subtraction-demo__ten" data-demo-ten="hundreds"></span>
+                <span class="subtraction-demo__dot-space"><span class="subtraction-demo__dot" data-demo-dot="hundreds"></span></span>
+                <span class="subtraction-demo__digit" data-demo-digit="hundreds">9</span>
+                <span class="subtraction-demo__digit subtraction-demo__digit--lower">3</span>
+                <span class="subtraction-demo__line"></span>
+                <span class="subtraction-demo__result" data-demo-result="hundreds"></span>
+            </div>
+            <div class="subtraction-demo__column" data-demo-column="tens">
+                <span class="subtraction-demo__place">десетици</span>
+                <span class="subtraction-demo__ten" data-demo-ten="tens"></span>
+                <span class="subtraction-demo__dot-space"><span class="subtraction-demo__dot" data-demo-dot="tens"></span></span>
+                <span class="subtraction-demo__digit" data-demo-digit="tens">8
+                    <span class="subtraction-demo__pointer">
+                        <svg viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 21V5a3 3 0 0 1 6 0v13c0-3 5-3 5 0 0-2 5-2 5 1 0-2 4-1 4 2v8c0 5-3 9-8 9h-7c-3 0-5-2-7-5L2 25c-2-3 2-6 4-3l4 4v-5Z" fill="white" stroke="#2c3e50" stroke-width="2" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span class="subtraction-demo__press-ring"></span>
+                </span>
+                <span class="subtraction-demo__digit subtraction-demo__digit--lower">6</span>
+                <span class="subtraction-demo__line"></span>
+                <span class="subtraction-demo__result" data-demo-result="tens"></span>
+            </div>
+            <div class="subtraction-demo__column" data-demo-column="units">
+                <span class="subtraction-demo__place">единици</span>
+                <span class="subtraction-demo__ten" data-demo-ten="units"></span>
+                <span class="subtraction-demo__dot-space"><span class="subtraction-demo__dot" data-demo-dot="units"></span></span>
+                <span class="subtraction-demo__digit" data-demo-digit="units">2</span>
+                <span class="subtraction-demo__digit subtraction-demo__digit--lower">7</span>
+                <span class="subtraction-demo__line"></span>
+                <span class="subtraction-demo__result" data-demo-result="units"></span>
+            </div>
+        </div>
+
+        <div class="subtraction-demo__caption" role="status" aria-live="polite" aria-atomic="true">
+            <span class="subtraction-demo__eyebrow" id="subtraction-demo-count">Стъпка 1 от 8</span>
+            <h2 id="subtraction-demo-step-title">Започваме отдясно</h2>
+            <p id="subtraction-demo-step-text">Подреждаме 982 − 367. Започваме от единиците вдясно.</p>
+            <p class="subtraction-demo__formula" id="subtraction-demo-formula">982 − 367 = ?</p>
+        </div>
     </div>
+
+    <div class="subtraction-demo__controls" aria-label="Управление на обяснението">
+        <button class="subtraction-demo__button subtraction-demo__button--play" id="subtraction-demo-play" type="button" aria-label="Пусни анимираното обяснение"><span data-demo-play-icon aria-hidden="true">▶</span><span data-demo-play-label>Пусни</span></button>
+        <button class="subtraction-demo__button" id="subtraction-demo-prev" type="button" aria-label="Предишна стъпка" title="Предишна стъпка" disabled><span aria-hidden="true">←</span><span class="subtraction-demo__button-label">Назад</span></button>
+        <button class="subtraction-demo__button" id="subtraction-demo-next" type="button" aria-label="Следваща стъпка" title="Следваща стъпка"><span class="subtraction-demo__button-label">Напред</span><span aria-hidden="true">→</span></button>
+        <button class="subtraction-demo__button" id="subtraction-demo-replay" type="button" aria-label="Върни обяснението в началото" title="Отначало" disabled><span aria-hidden="true">↻</span><span class="subtraction-demo__button-label">Отначало</span></button>
+    </div>
+    <progress class="subtraction-demo__progress" id="subtraction-demo-progress" max="8" value="1" aria-label="Напредък на обяснението"></progress>
 </section>
 
 <section class="instructions-box" aria-labelledby="trainer-instructions">
-    <h2 id="trainer-instructions">Как да работиш с тренажора</h2>
-    <ol>
-        <li>Кликни върху цифрата от умаляемото, <b>от чийто разред заемаш</b>, за да покажеш точка (•). Тя напомня, че този разред е намален с 1.</li>
-        <li>Напиши <b>10</b> в синьото квадратче над цифрата, <b>към която добавяш 10</b>.</li>
-        <li>Попълни разликата и натисни <em>Провери разликата</em>. За нова задача натисни <em>Генерирай</em> или въведи свои числа и натисни <em>Зареди</em>.</li>
-    </ol>
+    <h2 id="trainer-instructions">Опитай сам в тренажора</h2>
+    <p>Постави точка над цифрата, от която заемаш, запиши <b>10</b> над цифрата, към която го прибавяш, и попълни разликата отдясно наляво. Натисни <em>Провери разликата</em>. За нова задача избери <em>Генерирай</em> или въведи свои числа и натисни <em>Зареди</em>.</p>
 </section>
 
 <div class="toolbar">
-    <button class="btn-info" onclick="toggleExp()">💡 Обяснение</button>
+    <button class="btn-info" onclick="toggleExp()">🎬 Анимирано обяснение</button>
     <button class="btn-print" onclick="window.print()">🖨️ Принтирай</button>
     <button class="btn-red" onclick="clearInputs()">🧹 Изчисти</button>
-</div>
-
-<div id="explanation" class="explanation-panel">
-    <strong>Пример: 982 − 367</strong><br><br>
-    <b>Единици:</b> 2 &lt; 7 → Заемаме 1 десетица от 8 (<em>кликни върху 8 → появява се точка</em>).<br>
-    Над 2 записваме <b>10</b>. Смятаме: (10 + 2) − 7 = <b>5</b>.<br><br>
-    <b>Десетици:</b> Точката ни напомня, че 8 е станало 7. Смятаме: 7 − 6 = <b>1</b>.<br><br>
-    <b>Стотици:</b> 9 − 3 = <b>6</b>.<br><br>
-    ✅ Разлика: <b>615</b>.
 </div>
 
 <div class="container">
@@ -219,8 +361,10 @@
     window.onload = () => render("982", "367", true);
 
     function toggleExp() {
-        const e = document.getElementById('explanation');
-        e.style.display = (e.style.display === 'block') ? 'none' : 'block';
+        const demo = document.getElementById('subtraction-demo');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        demo.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+        document.getElementById('subtraction-demo-play').focus({ preventScroll: true });
     }
 
     function toggleDot(i) {
@@ -403,7 +547,7 @@
 
     // Enter за проверка
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && e.target instanceof Element && e.target.closest('.container') && !e.target.closest('button')) {
             const btnCheck = document.getElementById('btnCheck');
             const btnNext = document.getElementById('btnNext');
             if (btnNext.style.display !== 'none' && btnNext.style.display !== '') {
@@ -417,5 +561,140 @@
         }
     });
 </script>
+<script>
+(function () {
+    'use strict';
+
+    function initializeSubtractionDemo() {
+        const demo = document.getElementById('subtraction-demo');
+        if (!demo || demo.dataset.initialized === 'true') return;
+        demo.dataset.initialized = 'true';
+
+        const steps = [
+            { title: 'Започваме отдясно', text: 'Подреждаме 982 − 367. Започваме от единиците вдясно.', formula: '982 − 367 = ?', active: '', duration: 3800 },
+            { title: 'Единиците не достигат', text: 'От 2 единици не можем да извадим 7. Вземаме 1 десетица от 8-те десетици.', formula: '2 < 7', active: 'units', duration: 4000 },
+            { title: 'Поставяме точка над 8', text: 'Кликваме върху 8. Точката напомня, че сме взели 1 десетица. Цифрата 8 остава написана.', formula: '8 десетици − 1 десетица', active: 'units', donor: true, duration: 4800 },
+            { title: 'Записваме 10 над 2', text: 'Взетата десетица се превръща в 10 единици. Записваме 10 в синьото квадратче над 2.', formula: '1 десетица = 10 единици', active: 'units', duration: 4400 },
+            { title: 'Изваждаме единиците', text: 'Към 2 прибавяме 10 и изваждаме 7. Записваме 5 под единиците.', formula: '(10 + 2) − 7 = 5', active: 'units', duration: 4200 },
+            { title: 'Изваждаме десетиците', text: 'Точката над 8 напомня да намалим десетиците с 1. След това изваждаме 6 и записваме 1.', formula: '(8 − 1) − 6 = 1', active: 'tens', duration: 4600 },
+            { title: 'Изваждаме стотиците', text: 'От 9 стотици изваждаме 3 стотици. Записваме 6 под стотиците.', formula: '9 − 3 = 6', active: 'hundreds', duration: 3800 },
+            { title: 'Разликата е 615', text: 'В тренажора попълни цифрите и натисни „Провери разликата“. Можеш да провериш и със събиране:', formula: '615 + 367 = 982 ✓', active: '', duration: 0 }
+        ];
+        const play = document.getElementById('subtraction-demo-play');
+        const previous = document.getElementById('subtraction-demo-prev');
+        const next = document.getElementById('subtraction-demo-next');
+        const replay = document.getElementById('subtraction-demo-replay');
+        const title = document.getElementById('subtraction-demo-step-title');
+        const text = document.getElementById('subtraction-demo-step-text');
+        const formula = document.getElementById('subtraction-demo-formula');
+        const count = document.getElementById('subtraction-demo-count');
+        const progress = document.getElementById('subtraction-demo-progress');
+        const unitsTen = demo.querySelector('[data-demo-ten="units"]');
+        const tensDot = demo.querySelector('[data-demo-dot="tens"]');
+        const tensDigit = demo.querySelector('[data-demo-digit="tens"]');
+        const results = {
+            hundreds: demo.querySelector('[data-demo-result="hundreds"]'),
+            tens: demo.querySelector('[data-demo-result="tens"]'),
+            units: demo.querySelector('[data-demo-result="units"]')
+        };
+        let step = 0;
+        let playing = false;
+        let timer = null;
+
+        function clearTimer() {
+            if (timer !== null) window.clearTimeout(timer);
+            timer = null;
+        }
+
+        function updateControls() {
+            play.querySelector('[data-demo-play-icon]').textContent = playing ? 'Ⅱ' : '▶';
+            play.querySelector('[data-demo-play-label]').textContent = playing ? 'Пауза' : 'Пусни';
+            play.setAttribute('aria-label', playing ? 'Спри обяснението на текущата стъпка' : (step === steps.length - 1 ? 'Пусни обяснението отначало' : 'Пусни анимираното обяснение'));
+            previous.disabled = step === 0;
+            next.disabled = step === steps.length - 1;
+            replay.disabled = step === 0 && !playing;
+        }
+
+        function render() {
+            const current = steps[step];
+            demo.classList.remove('is-paused');
+            // Remove the step before restoring it, so manual replay retriggers the illustration.
+            demo.removeAttribute('data-step');
+            void demo.offsetWidth;
+            demo.dataset.step = String(step);
+            title.textContent = current.title;
+            text.textContent = current.text;
+            formula.textContent = current.formula;
+            count.textContent = 'Стъпка ' + (step + 1) + ' от ' + steps.length;
+            progress.value = step + 1;
+            unitsTen.textContent = step >= 3 ? '10' : '';
+            unitsTen.classList.toggle('is-filled', step >= 3);
+            tensDot.classList.toggle('is-visible', step >= 2);
+            tensDigit.classList.toggle('is-borrowed', step >= 2);
+            results.units.textContent = step >= 4 ? '5' : '';
+            results.tens.textContent = step >= 5 ? '1' : '';
+            results.hundreds.textContent = step >= 6 ? '6' : '';
+            Object.values(results).forEach(function (result) { result.classList.toggle('is-correct', step === steps.length - 1); });
+            demo.querySelectorAll('[data-demo-column]').forEach(function (column) {
+                column.classList.toggle('is-active', column.dataset.demoColumn === current.active);
+                column.classList.toggle('is-donor', column.dataset.demoColumn === 'tens' && !!current.donor);
+            });
+            updateControls();
+        }
+
+        function pause() {
+            clearTimer();
+            playing = false;
+            demo.classList.add('is-paused');
+            updateControls();
+        }
+
+        function schedule() {
+            clearTimer();
+            if (!playing || step === steps.length - 1) return;
+            timer = window.setTimeout(function () {
+                timer = null;
+                step += 1;
+                if (step === steps.length - 1) playing = false;
+                render();
+                schedule();
+            }, steps[step].duration);
+        }
+
+        function start() {
+            if (document.hidden) return;
+            playing = true;
+            demo.classList.remove('is-paused');
+            if (step === steps.length - 1) step = 0;
+            if (step === 0) {
+                step = 1;
+                render();
+            } else {
+                updateControls();
+            }
+            schedule();
+        }
+
+        function goTo(target) {
+            clearTimer();
+            playing = false;
+            step = Math.max(0, Math.min(steps.length - 1, target));
+            render();
+        }
+
+        play.addEventListener('click', function () { if (playing) pause(); else start(); });
+        previous.addEventListener('click', function () { goTo(step - 1); });
+        next.addEventListener('click', function () { goTo(step + 1); });
+        replay.addEventListener('click', function () { goTo(0); });
+        document.addEventListener('visibilitychange', function () { if (document.hidden && playing) pause(); });
+        window.addEventListener('pagehide', pause);
+        render();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeSubtractionDemo, { once: true });
+    else initializeSubtractionDemo();
+}());
+</script>
 </body>
 </html>
+
